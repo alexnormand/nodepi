@@ -113,33 +113,35 @@ var getLinkToBuildFile = function(version) {
  * @return {Promise}
  */
 var getLatestBuildLinks = (function() {
-  var cache = [];
+  var cache = {
+    links: [],
+    lastUpdate: 0
+  };
 
-  return function() {
-    return new RSVP.Promise(function(resolve, reject) {
+  return new RSVP.Promise(function(resolve, reject) {
 
-      if (cache.length) {
-        resolve(cache);
-      }
+    // if the cache is less than 1 day old
+    if (Date.now() - cache.lastUpdate < 86400000) {
+      resolve(cache.links);
+    }
 
-      var result = [];
+    var result = [];
 
-      getVersionLinks().then(function(links) {
-        var promises = links.map(function(l) {
-          return getLinkToBuildFile(l.label);
+    getVersionLinks().then(function(links) {
+      var promises = links.map(function(l) {
+        return getLinkToBuildFile(l.label);
+      });
+
+      RSVP.all(promises).then(function(links) {
+        var res = links.filter(function(l) {
+          return l !== null;
         });
 
-        RSVP.all(promises).then(function(links) {
-          var res = links.filter(function(l) {
-            return l !== null;
-          });
-
-          cache = res.slice().reverse();
-          resolve(cache);
-        });
+        cache.links = res.slice().reverse();
+        resolve(cache.links);
       });
     });
-  };
+  });
 })();
 
 
