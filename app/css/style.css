@@ -1,4 +1,4 @@
-  * {
+* {
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
@@ -28,8 +28,7 @@ body {
 }
 
 .main-content {
-  background: #111;
-  /*background: rgba(0, 0, 0, .8);*/
+  background: #252525;
   height: auto;
   padding: 5px 20px;
   position: absolute;
@@ -101,7 +100,6 @@ footer {
   color: #333;
 }
 
-
 footer a {
   color: #bc1142;
   text-decoration: none;
@@ -111,5 +109,4 @@ footer a {
   background-image: -webkit-linear-gradient(to bottom, #ededed 5%, #dfdfdf 100%);
   background-image: -moz-linear-gradient(to bottom, #ededed 5%, #dfdfdf 100%);
   background-image: linear-gradient(to bottom, #ededed 5%, #dfdfdf 100%);
-
 }
