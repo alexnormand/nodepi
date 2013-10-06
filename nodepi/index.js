@@ -2,8 +2,33 @@ var RSVP    = require('rsvp');
 var cheerio = require('cheerio');
 var request = require('request');
 
+var BASE_URL = 'http://nodejs.org/dist/';
+var linkRe = /v(\d+)\.(\d+)\.(\d+)\//;
+
+/**
+ * Returns the id associated with a node version number.
+ *
+ * @param  {String} version the node version.
+ * @return {number} the id associated with the provided node version number.
+ * @private
+ */
+var getVersionId = function(version) {
+  var result = linkRe.exec(version);
+  var id = result.slice(1).map(function(n) {
+    return (n.length === 1 ? '0' + n : n);
+  }).join('');
+
+  return +id;
+};
+
+
+/**
+ * Returns all node versions links
+ * @param  {String} [url="http://nodejs.org/dist/"]
+ * @return {Promise}
+ */
 var getVersionLinks = function(url) {
-  url = url || 'http://nodejs.org/dist';
+  url = url || BASE_URL;
 
   return new RSVP.Promise(function(resolve, reject) {
     request(url, function(err, response, body) {
@@ -14,20 +39,21 @@ var getVersionLinks = function(url) {
 
       var $ = cheerio.load(body);
       var links =  $('a');
-      var linkRegex = /v(\d+)\.(\d+)\.(\d+)\/$/;
 
       // Returns true if the link's href attribute matches "vXX.XX.XX", false otherwise;
       var filterLinks = function(i, el) {
-        return linkRegex.test($(el).attr('href'));
+        return linkRe.test($(el).attr('href'));
       };
 
       //
       var mapLinks = function(i, el) {
         var href = $(el).attr('href');
-        var result = linkRegex.exec(href);
-        var id = +(result.slice(1).map(function(n) { return (n.length === 1 ? '0'+n : n); }).join(''));
 
-        return { id: id, href: url + '/' + href };
+        return {
+          id: getVersionId(href),
+          href: url + '/' + href,
+          label: href.slice(0, -1)
+        };
       };
 
       // Sort
@@ -40,8 +66,15 @@ var getVersionLinks = function(url) {
   });
 };
 
-var getLinkBuildFile = function(url) {
+/**
+ * Returns a link to the raspberry pi binary.
+ * @param  {String} version the node version.
+ * @return {Promise}
+ */
+var getLinkToBuildFile = function(version) {
   return new RSVP.Promise(function(resolve, reject) {
+    var url = BASE_URL + version + '/';
+
     request(url, function(err, reponse, body) {
 
       if (err) {
@@ -62,7 +95,11 @@ var getLinkBuildFile = function(url) {
       var result = links.filter(filterLinks).map(mapLinks);
 
       if (result.length) {
-        resolve(url + result[0]);
+        resolve({
+          id: getVersionId(url),
+          href: url + result[0],
+          label: linkRe.exec(url)[0].slice(0, -1)
+        });
       } else {
         resolve(null);
       }
@@ -71,7 +108,10 @@ var getLinkBuildFile = function(url) {
   });
 };
 
-
+/**
+ * Returns the list of node versions with a downloadable raspberry pi binary version.
+ * @return {Promise}
+ */
 var getLatestBuildLinks = (function() {
   var cache = [];
 
@@ -82,11 +122,11 @@ var getLatestBuildLinks = (function() {
         resolve(cache);
       }
 
-      var result   = [];
+      var result = [];
 
       getVersionLinks().then(function(links) {
         var promises = links.map(function(l) {
-          return getLinkBuildFile(l.href);
+          return getLinkToBuildFile(l.label);
         });
 
         RSVP.all(promises).then(function(links) {
@@ -94,19 +134,18 @@ var getLatestBuildLinks = (function() {
             return l !== null;
           });
 
-          cache = res.slice();
-          resolve(res);
+          cache = res.slice().reverse();
+          resolve(cache);
         });
       });
     });
   };
 })();
 
+
 module.exports = {
   getVersionLinks: getVersionLinks,
-  getLinkBuildFile: getLinkBuildFile,
+  getLinkToBuildFile: getLinkToBuildFile,
   getLatestBuildLinks: getLatestBuildLinks
 };
-
-
 

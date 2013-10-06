@@ -1,0 +1,21 @@
+{
+  "name": "nodepi",
+  "main": "index.js",
+  "version": "0.0.1",
+  "homepage": "https://github.com/alexnormand/nodepi",
+  "authors": [
+    "Alex Normand <anormnd@gmail.com>"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "selectize": "~0.7.7"
+  }
+}

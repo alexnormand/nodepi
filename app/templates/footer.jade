@@ -1,0 +1,12 @@
+mixin footer(mode)
+  footer
+      | Brought to you by&nbsp;
+      a(href='http://www.alexnormand.com') Alex Normand
+
+  if mode == 'dev'
+    script(src='components/jquery/jquery.js')
+    script(src='components/selectize/dist/js/standalone/selectize.js')
+  else
+    script(src='//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js')
+
+  script(src='js/main.js')

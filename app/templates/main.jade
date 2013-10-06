@@ -1,0 +1,19 @@
+include header
+include footer
+
+!!! 5
+html
+  mixin header(mode)
+  body
+    .logo
+    .main-content
+      .content
+        h1 NodePi
+        h2 Download the latest node.js binaries for your Raspberry Pi
+        .form
+          select#versions-list(name='versions', placeholder='Select a version...')
+            each version in versions
+              option(value='#{version.href}') #{version.label}
+
+          button#download Download
+    mixin footer(mode)

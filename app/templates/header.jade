@@ -1,0 +1,9 @@
+mixin header(mode)
+  head
+    title nodepi - Download node.js binaries for your Rasperry Pi
+    meta(charset='utf-8')
+    meta(name='author', content='Alex Normand')
+    link(href='http://fonts.googleapis.com/css?family=Lato', rel='stylesheet', type='text/css')
+    if mode == 'dev'
+      link(rel='stylesheet', href='components/selectize/dist/css/selectize.css')
+    link(rel='stylesheet', href='css/style.css')
