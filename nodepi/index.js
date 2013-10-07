@@ -118,30 +118,33 @@ var getLatestBuildLinks = (function() {
     lastUpdate: 0
   };
 
-  return new RSVP.Promise(function(resolve, reject) {
+  return function() {
+    return new RSVP.Promise(function(resolve, reject) {
 
-    // if the cache is less than 1 day old
-    if (Date.now() - cache.lastUpdate < 86400000) {
-      resolve(cache.links);
-    }
+      // if the cache is less than 1 day old
+      if (Date.now() - cache.lastUpdate < 86400000) {
+        resolve(cache.links);
+      }
 
-    var result = [];
+      var result = [];
 
-    getVersionLinks().then(function(links) {
-      var promises = links.map(function(l) {
-        return getLinkToBuildFile(l.label);
-      });
-
-      RSVP.all(promises).then(function(links) {
-        var res = links.filter(function(l) {
-          return l !== null;
+      getVersionLinks().then(function(links) {
+        var promises = links.map(function(l) {
+          return getLinkToBuildFile(l.label);
         });
 
-        cache.links = res.slice().reverse();
-        resolve(cache.links);
+        RSVP.all(promises).then(function(links) {
+          var res = links.filter(function(l) {
+            return l !== null;
+          });
+
+          cache.links = res.slice().reverse();
+          cache.lastUpdate = Date.now();
+          resolve(cache.links);
+        });
       });
     });
-  });
+  };
 })();
 
 

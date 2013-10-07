@@ -40,7 +40,7 @@ app.get('/:version', function(req, res) {
 });
 
 app.get('/', function(req, res) {
-  nodepi.getLatestBuildLinks.then(function(links) {
+  nodepi.getLatestBuildLinks().then(function(links) {
     res.render('main', { versions: links, mode: process.argv[2] || 'dev' });
   });
 });
