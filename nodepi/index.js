@@ -85,7 +85,7 @@ var getLinkToBuildFile = function(version) {
       var links = $('a');
 
       var filterLinks = function(i, el) {
-        return /linux-arm-pi/.test($(el).attr('href'));
+        return (/linux-arm-pi/).test($(el).attr('href'));
       };
 
       var mapLinks = function(i, el) {
@@ -126,8 +126,6 @@ var getLatestBuildLinks = (function() {
         resolve(cache.links);
       }
 
-      var result = [];
-
       getVersionLinks().then(function(links) {
         var promises = links.map(function(l) {
           return getLinkToBuildFile(l.label);
@@ -141,7 +139,7 @@ var getLatestBuildLinks = (function() {
           cache.links = res.slice().reverse();
           cache.lastUpdate = Date.now();
           resolve(cache.links);
-        });
+        }, reject);
       });
     });
   };

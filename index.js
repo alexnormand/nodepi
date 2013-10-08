@@ -4,7 +4,7 @@ var nodepi   = require(__dirname + '/nodepi');
 var app = express();
 
 var filter = function filter(req, res) {
-  return /json|text|javascript|svg|html/.test(res.getHeader('Content-Type'));
+  return (/json|text|javascript|svg|html/).test(res.getHeader('Content-Type'));
 };
 
 app.configure(function() {
@@ -19,8 +19,8 @@ app.configure(function() {
 app.param(function(name, fn) {
   if (fn instanceof RegExp) {
     return function(req, res, next, val) {
-      var captures;
-      if (captures = fn.exec(String(val))) {
+      var captures = fn.exec(String(val));
+      if (captures) {
         req.params[name] = captures;
         next();
       } else {
