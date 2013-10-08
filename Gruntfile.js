@@ -24,6 +24,22 @@ module.exports = function(grunt) {
       }
     },
 
+    jshint: {
+      options: {
+        "curly": true,
+        "eqnull": true,
+        "eqeqeq": true,
+        "undef": true,
+        "unused": true,
+        "node": true,
+        "browser": true,
+        "globals": {
+          "$": true
+        }
+      },
+      all: ['*.js', 'app/js/*.js', 'nodepi/*.js']
+    },
+
     svgmin: {
       build: {
         files: {
@@ -53,8 +69,6 @@ module.exports = function(grunt) {
         }
       }
     }
-
-
   });
 
   // Load the plugins
@@ -63,6 +77,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-svgmin');
+  grunt.loadNpmTasks('grunt-contrib-jshint');
 
   // Default task(s).
   grunt.registerTask('default', ['clean','copy', 'svgmin', 'uglify', 'cssmin']);
