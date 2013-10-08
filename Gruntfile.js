@@ -80,6 +80,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
 
   // Default task(s).
-  grunt.registerTask('default', ['clean','copy', 'svgmin', 'uglify', 'cssmin']);
+  grunt.registerTask('default', ['jshint', 'clean','copy', 'svgmin', 'uglify', 'cssmin']);
 
 };
