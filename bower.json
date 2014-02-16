@@ -16,6 +16,6 @@
     "tests"
   ],
   "dependencies": {
-    "selectize": "~0.7.7"
+    "selectize": "0.8.5"
   }
 }
