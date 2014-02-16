@@ -6,7 +6,7 @@
     create: false
   });
 
-  $(downloadButton).on('click', function() {
+  downloadButton.addEventListener('click', function() {
     location.href = versionsList.value;
   });
 })(document);
