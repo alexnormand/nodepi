@@ -137,6 +137,7 @@ var getLatestBuildLinks = (function() {
           });
 
           cache.links = res.slice().reverse();
+          cache.links.unshift({ href: '', label: 'Select a Version...' });
           cache.lastUpdate = Date.now();
           resolve(cache.links);
         }, reject);
